@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "835738682506",
+    "firebase_url": "https://swap-hub.firebaseio.com",
+    "project_id": "swap-hub",
+    "storage_bucket": "swap-hub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835738682506:android:c1e4b5beea126cc0f09973",
+        "android_client_info": {
+          "package_name": "brighton.ac.uk.ic257.swaphub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835738682506-gdb3k8odgigjmsknq7caendfpm21shvo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "brighton.ac.uk.ic257.swaphub",
+            "certificate_hash": "33e6a98130b609bb6347f05370fb28d26f843f0e"
+          }
+        },
+        {
+          "client_id": "835738682506-vng5q2u4c3gifjc33mb3ae0q87hl5sge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFO6R7KCrB-gWUHsFcO2eHWbeFbW1WLo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835738682506-vng5q2u4c3gifjc33mb3ae0q87hl5sge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

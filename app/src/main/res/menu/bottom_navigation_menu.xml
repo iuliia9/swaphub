@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:title="Swaphub"
+        android:icon="@drawable/ic_swaphub"/>
+    <item
+        android:id="@+id/navigation_create"
+        android:title="Create Swap"
+        android:icon="@drawable/ic_addphoto"/>
+    <!--        android:icon="@drawable/ic_sms"-->
+    <item
+        android:id="@+id/navigation_myswaps"
+        android:title="My Swaps"
+        android:icon="@drawable/ic_myswaps"/>
+</menu>
