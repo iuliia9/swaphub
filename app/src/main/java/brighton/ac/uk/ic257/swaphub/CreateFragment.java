@@ -57,6 +57,8 @@ public class CreateFragment extends Fragment {
            String id = databaseItems.push().getKey();
            Item item = new Item(id, name, category);
            databaseItems.child(id).setValue(item);
+            //setting edittext to blank again
+            editTextName.setText("");
            Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();
         }
         else{

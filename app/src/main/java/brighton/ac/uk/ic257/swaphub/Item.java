@@ -4,15 +4,15 @@ public class Item {
 
     String itemId;
     String itemName;
-    String itemGenre;
+    String itemCategory;
 
     public Item(){
 
     }
-    public Item(String itemId, String itemName, String itemGenre) {
+    public Item(String itemId, String itemName, String itemCategory) {
         this.itemId = itemId;
         this.itemName = itemName;
-        this.itemGenre = itemGenre;
+        this.itemCategory = itemCategory;
     }
 
     public String getItemId() {
@@ -23,7 +23,7 @@ public class Item {
         return itemName;
     }
 
-    public String getItemGenre() {
-        return itemGenre;
+    public String getItemCategory() {
+        return itemCategory;
     }
 }
