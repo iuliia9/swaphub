@@ -20,6 +20,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     Button btnLogout;
     FirebaseAuth mFirebase;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
