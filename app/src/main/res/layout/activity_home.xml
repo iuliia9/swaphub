@@ -5,21 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="171dp"
-        android:layout_marginTop="363dp"
-        android:layout_marginEnd="181dp"
-        android:layout_marginBottom="349dp"
-        android:text="Welcome"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
@@ -32,19 +17,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        >
+        android:layout_marginBottom="56dp"
+        android:text="@string/title_home"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
         <!-- Main content -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             android:layout_gravity="bottom"
             style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
             android:background="#1FA8ED"
@@ -53,5 +44,5 @@
             app:menu="@menu/bottom_navigation_menu"
             />
         <!--            android:background="@color/colorPrimary"-->
-    </FrameLayout>
+<!--    </FrameLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
