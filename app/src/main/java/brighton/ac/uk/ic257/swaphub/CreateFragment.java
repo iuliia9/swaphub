@@ -19,6 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 public class CreateFragment extends Fragment {
 
     EditText editTextName;
+    EditText editTextDescription;
+    EditText editTextSwapFor;
+    EditText editTextUserName;
+    EditText editTextUserPhone;
     Spinner spinnerCategory;
     Button buttonAdd;
     DatabaseReference databaseItems;
@@ -36,6 +40,10 @@ public class CreateFragment extends Fragment {
        View view = inflater.inflate(R.layout.fragment_create, container, false);
 
         editTextName = view.findViewById(R.id.editTextName);
+        editTextDescription = view.findViewById(R.id.editTextItemDesc);
+        editTextSwapFor = view.findViewById(R.id.editTextItemSwapFor);
+        editTextUserName = view.findViewById(R.id.editTextUserName);
+        editTextUserPhone = view.findViewById(R.id.editTextUserPhone);
         spinnerCategory = view.findViewById(R.id.spinner);
         buttonAdd = view.findViewById(R.id.buttonAdd);
 
@@ -52,10 +60,13 @@ public class CreateFragment extends Fragment {
     private void addItem(){
         String name = editTextName.getText().toString().trim();
         String category = spinnerCategory.getSelectedItem().toString();
-
+        String description = editTextDescription.getText().toString().trim();
+        String swapfor = editTextSwapFor.getText().toString().trim();
+        String username = editTextUserName.getText().toString().trim();
+        String userphone = editTextUserPhone.getText().toString().trim();
         if (!TextUtils.isEmpty(name)){
            String id = databaseItems.push().getKey();
-           Item item = new Item(id, name, category);
+           Item item = new Item(id, name, category, description, swapfor, username, userphone);
            databaseItems.child(id).setValue(item);
             //setting edittext to blank again
             editTextName.setText("");
