@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Swap Hub</string>
+    <string name="title_home">SwapHub</string>
     <array name="genres"><item>Clothes</item>
     <item>Food</item>
     <item>Other</item></array>
