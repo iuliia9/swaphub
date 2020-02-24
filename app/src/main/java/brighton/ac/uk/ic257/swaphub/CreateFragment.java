@@ -2,6 +2,8 @@ package brighton.ac.uk.ic257.swaphub;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +37,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 import static com.firebase.ui.auth.ui.email.RegisterEmailFragment.TAG;
@@ -103,11 +109,18 @@ public class CreateFragment extends Fragment {
     private void addItem(){
         if (mImageUri != null)
         {
-//            StorageReference fileReference = storageRef.child(System.currentTimeMillis()
-//                   + "." + getFileExtension(mImageUri));
-//            UploadTask uploadTask = null;
-//            UploadTask uploadTask = fileReference.putFile(mImageUri);
-            storageRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>()
+            imageView.setDrawingCacheEnabled(true);
+            imageView.buildDrawingCache();
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+
+            final StorageReference fileRef = storageRef.child("images/"+ UUID.randomUUID().toString());
+            UploadTask uploadTask =  fileRef.putBytes(data);
+
+           uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>()
             {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception
@@ -115,8 +128,10 @@ public class CreateFragment extends Fragment {
                     if (!task.isSuccessful())
                     {
                         throw task.getException();
+
                     }
-                    return storageRef.getDownloadUrl();
+                    Toast.makeText(getActivity(), "success: ", Toast.LENGTH_SHORT).show();
+                    return fileRef.getDownloadUrl();
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>()
             {
@@ -144,7 +159,7 @@ public class CreateFragment extends Fragment {
                         Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();
                     } else
                     {
-                        Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "upload failed!!!: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
