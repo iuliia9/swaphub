@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.squareup.picasso.Picasso;
 
 
 public class HomeFragment extends Fragment {
@@ -67,6 +69,11 @@ public class HomeFragment extends Fragment {
                 holder.setSwapFor(model.getItemSwapFor());
                 holder.setUserName(model.getSellerName());
                 holder.setUserPhone(model.getSellerPhone());
+                Picasso.get()
+                        .load(model.getImageUrl())
+                        .fit()
+                        .centerCrop()
+                        .into(holder.imageView);
             }
 
             @NonNull
@@ -85,9 +92,11 @@ public class HomeFragment extends Fragment {
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
         View mView;
+        public ImageView imageView;
                 public ItemViewHolder(View itemView){
                     super(itemView);
                     mView = itemView;
+                    imageView = itemView.findViewById(R.id.image_view_upload);
                 }
                 public void setName(String name){
                     TextView itemName = mView.findViewById(R.id.Name);

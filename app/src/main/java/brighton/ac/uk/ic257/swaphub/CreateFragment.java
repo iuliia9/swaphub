@@ -1,12 +1,16 @@
 package brighton.ac.uk.ic257.swaphub;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,14 +18,26 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import static android.app.Activity.RESULT_OK;
+import static com.firebase.ui.auth.ui.email.RegisterEmailFragment.TAG;
 
 public class CreateFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -39,6 +55,9 @@ public class CreateFragment extends Fragment {
     ProgressBar progressBar;
     Uri mImageUri;
     DatabaseReference databaseItems;
+    StorageReference storageRef;
+
+    private StorageTask mUploadTask;
     public CreateFragment(){
         // empty constructor
     }
@@ -70,7 +89,7 @@ public class CreateFragment extends Fragment {
                 openFileChooser();
             }
         });
-
+        storageRef = FirebaseStorage.getInstance().getReference("Items");
         databaseItems = FirebaseDatabase.getInstance().getReference("Items");
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,22 +101,53 @@ public class CreateFragment extends Fragment {
     }
 
     private void addItem(){
-        String name = editTextName.getText().toString().trim();
-        String category = spinnerCategory.getSelectedItem().toString();
-        String description = editTextDescription.getText().toString().trim();
-        String swapfor = editTextSwapFor.getText().toString().trim();
-        String username = editTextUserName.getText().toString().trim();
-        String userphone = editTextUserPhone.getText().toString().trim();
-        if (!TextUtils.isEmpty(name)){
-           String id = databaseItems.push().getKey();
-           Item item = new Item(id, name, category, description, swapfor, username, userphone);
-           databaseItems.child(id).setValue(item);
-            //setting edittext to blank again
-            editTextName.setText("");
-           Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(getActivity(), "Enter Name", Toast.LENGTH_SHORT).show();
+        if (mImageUri != null)
+        {
+//            StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+//                   + "." + getFileExtension(mImageUri));
+//            UploadTask uploadTask = null;
+//            UploadTask uploadTask = fileReference.putFile(mImageUri);
+            storageRef.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>()
+            {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception
+                {
+                    if (!task.isSuccessful())
+                    {
+                        throw task.getException();
+                    }
+                    return storageRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>()
+            {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task)
+                {
+                    if (task.isSuccessful())
+                    {
+                        Uri downloadUri = task.getResult();
+                        Log.e(TAG, "then: " + downloadUri.toString());
+                        String id = databaseItems.push().getKey();
+                        String name = editTextName.getText().toString().trim();
+                        String category = spinnerCategory.getSelectedItem().toString();
+                        String description = editTextDescription.getText().toString().trim();
+                        String swapfor = editTextSwapFor.getText().toString().trim();
+                        String username = editTextUserName.getText().toString().trim();
+                        String userphone = editTextUserPhone.getText().toString().trim();
+//id
+                        Item item = new Item(id, name, category, description,
+                                swapfor, username, userphone, downloadUri.toString());
+
+                        databaseItems.child(id).setValue(item);
+
+                        editTextName.setText("");
+                        Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();
+                    } else
+                    {
+                        Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
     private void openFileChooser() {
@@ -117,4 +167,10 @@ public class CreateFragment extends Fragment {
             Picasso.get().load(mImageUri).into(imageView);
         }
     }
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
 }
