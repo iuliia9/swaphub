@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -87,6 +89,8 @@ public class HomeFragment extends Fragment {
         };
         firebaseRecyclerAdapter.startListening();
         mItems.setAdapter(firebaseRecyclerAdapter);
+//        Toolbar myToolbar = view.findViewById(R.id.home_toolbar);
+//        ((AppCompatActivity)getActivity()).setSupportActionBar(myToolbar);
         return view;
     }
 
@@ -98,29 +102,29 @@ public class HomeFragment extends Fragment {
                     mView = itemView;
                     imageView = itemView.findViewById(R.id.image_view_upload);
                 }
-                public void setName(String name){
-                    TextView itemName = mView.findViewById(R.id.Name);
-                    itemName.setText(name);
-                }
-                public void setCategory(String category){
-                    TextView itemCategory = mView.findViewById(R.id.Category);
-                    itemCategory.setText(category);
-                }
-                public void setDescription(String description){
-                    TextView itemDescription = mView.findViewById(R.id.Description);
-                    itemDescription.setText(description);
-                }
-                public void setSwapFor(String swapfor){
-                    TextView itemSwapFor = mView.findViewById(R.id.SwapFor);
-                    itemSwapFor.setText(swapfor);
-                }
-                 public void setUserName(String username){
-                    TextView itemSwapFor = mView.findViewById(R.id.UserName);
-                    itemSwapFor.setText(username);
-                    }
-                public void setUserPhone(String userPhone){
-                    TextView itemSwapFor = mView.findViewById(R.id.UserPhone);
-                    itemSwapFor.setText(userPhone);
-                    }
+        public void setName(String name){
+            TextView itemName = mView.findViewById(R.id.Name);
+            itemName.setText(name);
+        }
+        public void setCategory(String category){
+            TextView itemCategory = mView.findViewById(R.id.Category);
+            itemCategory.setText("Category: " + category);
+        }
+        public void setDescription(String description){
+            TextView itemDescription = mView.findViewById(R.id.Description);
+            itemDescription.setText("Description: " + description);
+        }
+        public void setSwapFor(String swapfor){
+            TextView itemSwapFor = mView.findViewById(R.id.SwapFor);
+            itemSwapFor.setText("Swap For: " + swapfor);
+        }
+        public void setUserName(String username){
+            TextView itemSwapFor = mView.findViewById(R.id.UserName);
+            itemSwapFor.setText("Contact Name: " + username);
+        }
+        public void setUserPhone(String userPhone){
+            TextView itemSwapFor = mView.findViewById(R.id.UserPhone);
+            itemSwapFor.setText("Phone: " + userPhone);
+        }
     }
 }
