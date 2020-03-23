@@ -3,13 +3,10 @@ package brighton.ac.uk.ic257.swaphub;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -17,9 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
-    Button btnLogout;
-    FirebaseAuth mFirebase;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +21,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_home);
         BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(this);
+        // add toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         //loading the default fragment
@@ -42,10 +37,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // settings was selected
+            // profile was selected
             case R.id.action_settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT)
-                        .show();
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
                 // logout was selected
             case R.id.action_logout:
@@ -73,8 +67,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.navigation_myswaps:
                 fragment = new MyswapsFragment();
                 break;
-            case R.id.navigation_profile:
-                fragment = new ProfileFragment();
+            case R.id.navigation_chat:
+                fragment = new ChatFragment();
                 break;
         }
 
