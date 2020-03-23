@@ -1,14 +1,20 @@
 package brighton.ac.uk.ic257.swaphub;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,10 +26,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity{
-    private DatabaseReference databaseReference;
     private TextView profileNameTextView, profileSurnameTextView, profilePhonenoTextView;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -31,11 +38,33 @@ public class ProfileActivity extends AppCompatActivity{
     private FirebaseStorage firebaseStorage;
     private TextView textViewemailname;
     private Button btnSave;
+    private static int PICK_IMAGE = 123;
+    Uri imagePath;
+
+    // pick image from gallery
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
+            imagePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
+                profilePicImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        // add a toolbar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar2);
+        setSupportActionBar(myToolbar);
+        // enable the back arrow
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // set title for toolbar
+        getSupportActionBar().setTitle("Profile");
         profilePicImageView = findViewById(R.id.profile);
         profileNameTextView = findViewById(R.id.profile_name_textView);
         profileSurnameTextView = findViewById(R.id.profile_surname_textView);
@@ -44,7 +73,9 @@ protected void onCreate(Bundle savedInstanceState) {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
+
         final DatabaseReference databaseReference = firebaseDatabase.getReference("Users").child(firebaseAuth.getUid());
+        // get avatar photo
         StorageReference storageReference = firebaseStorage.getReference("Avatars");
         storageReference.child(firebaseAuth.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -52,18 +83,24 @@ protected void onCreate(Bundle savedInstanceState) {
                 Picasso.get().load(uri).fit().centerInside().into(profilePicImageView);
             }
         });
-//        if (firebaseAuth.getCurrentUser() == null){
-//            view.finish();
-//            startActivity(new Intent(getApplicationContext(),SignInActivity.class));
-//        }
+       // let the user to update profile photo by clicking on it
+        profilePicImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profileIntent = new Intent();
+                profileIntent.setType("image/*");
+                profileIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(profileIntent, "Select Image."), PICK_IMAGE);
+            }
+        });
+
 
         final FirebaseUser user=firebaseAuth.getCurrentUser();
-
+        // display profile info from database
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange( DataSnapshot dataSnapshot) {
-                System.out.println("onChange");
                 final UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                 profileNameTextView.setText(userProfile.getUserName());
                 profileSurnameTextView.setText(userProfile.getUserSurname());
@@ -75,7 +112,7 @@ protected void onCreate(Bundle savedInstanceState) {
             public void onCancelled( DatabaseError databaseError) {
             }
         });
-
+    // update profile info when save button clicked
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,12 +120,24 @@ protected void onCreate(Bundle savedInstanceState) {
                 String surname = profileSurnameTextView.getText().toString();
                 String phoneno =  profilePhonenoTextView.getText().toString();
                 UserProfile userinformation = new UserProfile(name,surname, phoneno);
-                FirebaseUser user = firebaseAuth.getCurrentUser();
                 databaseReference.setValue(userinformation).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        System.out.println("Completed FireBase Profile Update");
                         System.out.println("Is successful: " + task.isSuccessful());
+                    }
+                });
+                StorageReference imageReference = storageReference.child(firebaseAuth.getUid());
+
+                UploadTask uploadTask = imageReference.putFile(imagePath);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileActivity.this, "Error: Uploading profile picture", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(ProfileActivity.this, "Profile picture uploaded", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
