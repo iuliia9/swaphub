@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:text="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:paddingBottom="8dp"
+    android:paddingRight="16dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:background="?android:selectableItemBackground">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/user"
+        android:background="@drawable/circle"
+        android:textColor="@color/white"
+        android:gravity="center"
+        tools:text="A"
+        android:maxEms="1"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"/>
+
+    <androidx.legacy.widget.Space
+        android:layout_width="16dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/chat_message"
+    android:background="@drawable/chat_round_rect"
+    android:layout_marginEnd="64dp"
+    android:layout_marginRight="64dp"
+    android:textAppearance="?android:textAppearanceMedium"
+    tools:text = "Hello hello"/>
+
+</LinearLayout>

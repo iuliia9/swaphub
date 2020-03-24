@@ -1,22 +1,29 @@
 package brighton.ac.uk.ic257.swaphub;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -25,8 +32,10 @@ import com.squareup.picasso.Picasso;
 
 public class HomeFragment extends Fragment {
     private DatabaseReference databaseItems;
+    private DatabaseReference databaseGroups;
     RecyclerView mItems;
     Query query1;
+    private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
     FirebaseRecyclerAdapter<Item, ItemViewHolder> firebaseRecyclerAdapter;
     LinearLayoutManager mLayoutManager;
@@ -46,11 +55,10 @@ public class HomeFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading Please Wait...");
         progressDialog.show();
-
+        databaseGroups = FirebaseDatabase.getInstance().getReference("Groups");
         databaseItems = FirebaseDatabase.getInstance().getReference("Items");
 //        databaseItems.keepSynced(true);
         query1 = FirebaseDatabase.getInstance().getReference().child("Items");
-
         mItems = view.findViewById(R.id.myrecycleview);
         mItems.setHasFixedSize(true);
         mItems.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -84,18 +92,69 @@ public class HomeFragment extends Fragment {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_row, parent, false);
                 progressDialog.dismiss();
+                Button makeInquiry = view.findViewById(R.id.button_make_inquiry);
+                // make inquiry clicked
+                makeInquiry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialog);
+                        builder.setTitle("Enter Group Name :");
+
+                        final EditText groupNameField = new EditText(getActivity());
+                        groupNameField.setHint("e.g Fresh Vegetables");
+                        builder.setView(groupNameField);
+
+                        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                String groupName = groupNameField.getText().toString();
+
+                                if (TextUtils.isEmpty(groupName))
+                                {
+                                    Toast.makeText(getActivity(), "Please write Group Name...",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    databaseGroups.child(groupName).setValue("")
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task)
+                                                {
+                                                    if (task.isSuccessful())
+                                                    {
+                                                        Toast.makeText(getActivity(), " group is Created Successfully", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                        builder.show();
+                    }
+                });
                 return new ItemViewHolder(view);
             }
         };
         firebaseRecyclerAdapter.startListening();
         mItems.setAdapter(firebaseRecyclerAdapter);
-//        Toolbar myToolbar = view.findViewById(R.id.home_toolbar);
-//        ((AppCompatActivity)getActivity()).setSupportActionBar(myToolbar);
         return view;
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
         View mView;
+
         public ImageView imageView;
                 public ItemViewHolder(View itemView){
                     super(itemView);
@@ -108,23 +167,23 @@ public class HomeFragment extends Fragment {
         }
         public void setCategory(String category){
             TextView itemCategory = mView.findViewById(R.id.Category);
-            itemCategory.setText("Category: " + category);
+            itemCategory.setText(category);
         }
         public void setDescription(String description){
             TextView itemDescription = mView.findViewById(R.id.Description);
-            itemDescription.setText("Description: " + description);
+            itemDescription.setText(description);
         }
         public void setSwapFor(String swapfor){
             TextView itemSwapFor = mView.findViewById(R.id.SwapFor);
-            itemSwapFor.setText("Swap For: " + swapfor);
+            itemSwapFor.setText(swapfor);
         }
         public void setUserName(String username){
             TextView itemSwapFor = mView.findViewById(R.id.UserName);
-            itemSwapFor.setText("Contact Name: " + username);
+            itemSwapFor.setText(username);
         }
         public void setUserPhone(String userPhone){
             TextView itemSwapFor = mView.findViewById(R.id.UserPhone);
-            itemSwapFor.setText("Phone: " + userPhone);
+            itemSwapFor.setText(userPhone);
         }
     }
 }

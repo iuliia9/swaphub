@@ -15,8 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
-//import android.support.v7.app.AppCompatActivity;
-
 public class MainActivity extends AppCompatActivity {
     EditText emailId, password;
     Button btnSignIn;
@@ -51,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+
+
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

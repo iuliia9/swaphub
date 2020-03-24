@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -44,8 +45,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -66,15 +70,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import com.google.firebase.auth.FirebaseAuth;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
 import static android.app.Activity.RESULT_OK;
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 import static com.firebase.ui.auth.ui.email.RegisterEmailFragment.TAG;
 
-public class CreateFragment extends Fragment {
+public class CreateFragment extends Fragment implements  EasyPermissions.PermissionCallbacks{
 
     EditText editTextName;
     EditText editTextDescription;
@@ -94,11 +104,16 @@ public class CreateFragment extends Fragment {
     StorageReference storageRef;
     Uri image;
     String CameraFile;
+    private FirebaseDatabase firebaseDatabase;
     static final int PICK_IMAGE_REQUEST = 2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    public CreateFragment(){
+    private static final int CAMERA_PERMISSION_CODE = 100;
+    private static final int STORAGE_PERMISSION_CODE = 101;
+
+    public CreateFragment() {
         // empty constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +122,10 @@ public class CreateFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_create, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_create, container, false);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference("Users").child(firebaseAuth.getUid());
         editTextName = view.findViewById(R.id.editTextName);
         editTextDescription = view.findViewById(R.id.editTextItemDesc);
         editTextSwapFor = view.findViewById(R.id.editTextItemSwapFor);
@@ -116,22 +133,33 @@ public class CreateFragment extends Fragment {
         editTextUserPhone = view.findViewById(R.id.editTextUserPhone);
         spinnerCategory = view.findViewById(R.id.spinner);
         buttonAdd = view.findViewById(R.id.buttonAdd);
-
         buttonChoosePhoto = view.findViewById(R.id.buttonChoosePhoto);
         buttonTakePhoto = view.findViewById(R.id.buttonTakePhoto);
-        // if the user does not grant permission to use camera then disable the button
-//        if (ContextCompat.checkSelfPermission(getActivity(),
-//                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//            buttonTakePhoto.setEnabled(false);
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{ Manifest.permission.CAMERA,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
-//        }
         imageView = view.findViewById(R.id.imageView);
-        progressBar = view.findViewById(R.id.progressBar);
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onChange");
+                final UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                editTextUserName.setText(userProfile.getUserName());
+                //  profilePhonenoTextView.setText(userProfile.getUserCity());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         buttonTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    openCamera();
+                }
+                else{
+                    dispatchTakePictureIntent();
+                }
             }
         });
         buttonChoosePhoto.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +170,7 @@ public class CreateFragment extends Fragment {
         });
         storageRef = FirebaseStorage.getInstance().getReference("Items");
         databaseItems = FirebaseDatabase.getInstance().getReference("Items");
+
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,19 +179,19 @@ public class CreateFragment extends Fragment {
         });
         return view;
     }
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 //          File where the photo goes
-            File outFile = null;
-            try {
-             outFile= createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                // Error occurred while creating the File
-            }
-            CameraFile = outFile.toString();
-            Uri outuri = FileProvider.getUriForFile(
+        File outFile = null;
+        try {
+            outFile = createImageFile();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            // Error occurred while creating the File
+        }
+        CameraFile = outFile.toString();
+        Uri outuri = FileProvider.getUriForFile(
                 getContext(),
                 getContext().getApplicationContext()
                         .getPackageName() + ".provider", outFile);
@@ -171,12 +200,12 @@ public class CreateFragment extends Fragment {
 //                        BuildConfig.APPLICATION_ID + ".provider",
 //                        photoFile);
 //                mPhotoFile = photoFile;
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outuri);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outuri);
 
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                }
-            }
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
 
     private void openFileChooser() {
@@ -189,27 +218,19 @@ public class CreateFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == PICK_IMAGE_REQUEST){
-                // && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            if (requestCode == PICK_IMAGE_REQUEST) {
                 mImageUri = data.getData();
                 Picasso.get().load(mImageUri).into(imageView);
             }
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (data != null) {
                     image = data.getData();
-//                    imageView.setImageURI(image);
-//                    imageView.setVisibility(View.VISIBLE);
                     Picasso.get().load(image).into(imageView);
                 }
                 if (image == null && CameraFile != null) {
                     image = Uri.fromFile(new File(CameraFile));
-//                    imageView.setImageURI(image);
-//                    imageView.setVisibility(View.VISIBLE);
                     Picasso.get().load(image).into(imageView);
                 }
-//                Bundle extras = data.getExtras();
-//                Bitmap imageBitmap = (Bitmap) extras.get("data");
-//                imageView.setImageBitmap(imageBitmap);
                 File file = new File(CameraFile);
                 if (!file.exists()) {
                     file.mkdir();
@@ -221,6 +242,7 @@ public class CreateFragment extends Fragment {
 
     /**
      * Create file with current timestamp name
+     *
      * @throws IOException
      */
     private File createImageFile() throws IOException {
@@ -232,28 +254,9 @@ public class CreateFragment extends Fragment {
         return mFile;
     }
 
-    /**
-     * Get real file path from URI
-     */
-    public String getRealPathFromUri(Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
-            assert cursor != null;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
 
-    private void addItem(){
-        if (mImageUri != null)
-        {
+    private void addItem() {
+        if (mImageUri != null || image != null) {
             imageView.setDrawingCacheEnabled(true);
             imageView.buildDrawingCache();
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
@@ -261,30 +264,22 @@ public class CreateFragment extends Fragment {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
 
+            final StorageReference fileRef = storageRef.child("images/" + UUID.randomUUID().toString());
+            UploadTask uploadTask = fileRef.putBytes(data);
 
-            final StorageReference fileRef = storageRef.child("images/"+ UUID.randomUUID().toString());
-            UploadTask uploadTask =  fileRef.putBytes(data);
-
-           uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>()
-            {
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception
-                {
-                    if (!task.isSuccessful())
-                    {
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
                         throw task.getException();
-
                     }
                     Toast.makeText(getActivity(), "success: ", Toast.LENGTH_SHORT).show();
                     return fileRef.getDownloadUrl();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>()
-            {
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
-                public void onComplete(@NonNull Task<Uri> task)
-                {
-                    if (task.isSuccessful())
-                    {
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         Log.e(TAG, "then: " + downloadUri.toString());
                         String id = databaseItems.push().getKey();
@@ -303,16 +298,47 @@ public class CreateFragment extends Fragment {
                         editTextName.setText("");
                         editTextDescription.setText("");
                         editTextSwapFor.setText("");
-                        editTextUserName.setText("");
                         editTextUserPhone.setText("");
                         imageView.setImageBitmap(null);
                         Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();
-                    } else
-                    {
+                    } else {
                         Toast.makeText(getActivity(), "upload failed!!!: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(123)
+    private void openCamera() {
+        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(getActivity(), perms)) {
+            dispatchTakePictureIntent();
+            Toast.makeText(getActivity(), "Opening camera", Toast.LENGTH_SHORT).show();
+        } else {
+            EasyPermissions.requestPermissions(this, "We need permissions because this and that",
+                    123, perms);
+        }
+    }
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
+    }
+
 }

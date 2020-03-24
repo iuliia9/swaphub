@@ -20,6 +20,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
+        android:hint="Item Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -28,7 +29,6 @@
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Item Name"
              />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,6 +86,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
+        android:hint="Your Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutItemSwapFor">
@@ -95,7 +96,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords"
-            android:hint="Your Name"
             />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
@@ -130,30 +130,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutYourPhone" />
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear"
+            android:layout_marginLeft="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner"
+            android:orientation="vertical">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3">
         <Button
             android:id="@+id/buttonChoosePhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Choose Photo"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner"/>
-
+            style="?attr/materialButtonOutlinedStyle"
+            app:backgroundTint="#C9CBCB"
+            app:strokeColor="@color/colorPrimary" />
+        <TextView
+            android:id="@+id/or"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="or"
+            android:layout_marginLeft="5dp"
+            />
         <Button
             android:id="@+id/buttonTakePhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="Take a Photo"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonChoosePhoto"/>
-
+            style="?attr/materialButtonOutlinedStyle"
+            app:backgroundTint="#C9CBCB"
+            app:strokeColor="@color/colorPrimary" />
+        </TableRow>
+        </LinearLayout>
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
@@ -166,23 +181,11 @@
             android:background="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonTakePhoto" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="200dp"
-            android:layout_height="10dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/linear" />
 
     <Button
         android:id="@+id/buttonAdd"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Item"
         android:layout_marginStart="5dp"
@@ -190,6 +193,8 @@
         android:layout_marginEnd="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar"/>
+        app:icon="@drawable/ic_add"
+        app:iconGravity="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

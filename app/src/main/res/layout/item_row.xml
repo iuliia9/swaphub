@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="#fff"
+    app:cardBackgroundColor="#039BE5"
+    style="@style/Widget.MaterialComponents.CardView"
     app:cardCornerRadius="3dp"
     app:cardElevation="3dp"
     app:contentPadding="5dp"
@@ -13,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#F2A4F3">
+        android:background="#FFFFFF">
         <TextView
             android:id="@+id/Name"
             android:text="Name"
@@ -24,40 +25,86 @@
         <TextView
             android:id="@+id/Category"
             android:text="Category"
-            android:textSize="20sp"
+            android:textStyle="italic"
+            android:textSize="15sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
         <ImageView
             android:id="@+id/image_view_upload"
             android:layout_width="match_parent"
             android:layout_height="200dp" />
-
         <TextView
             android:id="@+id/Description"
             android:text="Description"
             android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+        <ImageView
+            android:id="@+id/imageViewSwap"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            app:srcCompat="@drawable/ic_swap"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"/>
         <TextView
             android:id="@+id/SwapFor"
             android:text="Swap For"
             android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+        <ImageView
+            android:id="@+id/imageViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            app:srcCompat="@drawable/ic_person"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"/>
         <TextView
             android:id="@+id/UserName"
             android:text="Contact Name"
             android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+        <ImageView
+            android:id="@+id/imageViewPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            app:srcCompat="@drawable/ic_phone"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"/>
         <TextView
             android:id="@+id/UserPhone"
             android:text="Phone Number"
             android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
+        </TableRow>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_make_inquiry"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Make an Inquiry"/>
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>
