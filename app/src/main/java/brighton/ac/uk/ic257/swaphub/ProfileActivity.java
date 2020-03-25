@@ -39,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity{
     private TextView textViewemailname;
     private Button btnSave;
     private static int PICK_IMAGE = 123;
+    boolean photoChanged = false;
     Uri imagePath;
 
     // pick image from gallery
@@ -90,6 +91,7 @@ protected void onCreate(Bundle savedInstanceState) {
                 Intent profileIntent = new Intent();
                 profileIntent.setType("image/*");
                 profileIntent.setAction(Intent.ACTION_GET_CONTENT);
+                photoChanged = true;
                 startActivityForResult(Intent.createChooser(profileIntent, "Select Image."), PICK_IMAGE);
             }
         });
@@ -123,11 +125,12 @@ protected void onCreate(Bundle savedInstanceState) {
                 databaseReference.setValue(userinformation).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        System.out.println("Is successful: " + task.isSuccessful());
+                        Toast.makeText(ProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
                     }
                 });
-                StorageReference imageReference = storageReference.child(firebaseAuth.getUid());
-
+                if (photoChanged == true) {
+                    StorageReference imageReference = storageReference.child(firebaseAuth.getUid());
+                    
                 UploadTask uploadTask = imageReference.putFile(imagePath);
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -140,6 +143,7 @@ protected void onCreate(Bundle savedInstanceState) {
                         Toast.makeText(ProfileActivity.this, "Profile picture uploaded", Toast.LENGTH_SHORT).show();
                     }
                 });
+                }
             }
         });
     }
