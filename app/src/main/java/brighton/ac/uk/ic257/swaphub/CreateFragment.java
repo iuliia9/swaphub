@@ -165,7 +165,12 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         buttonChoosePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFileChooser();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    openGallery();
+                }
+                else {
+                    openFileChooser();
+                }
             }
         });
         storageRef = FirebaseStorage.getInstance().getReference("Items");
@@ -195,11 +200,6 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                 getContext(),
                 getContext().getApplicationContext()
                         .getPackageName() + ".provider", outFile);
-//            if (photoFile != null) {
-//                Uri photoURI = FileProvider.getUriForFile(getActivity(),
-//                        BuildConfig.APPLICATION_ID + ".provider",
-//                        photoFile);
-//                mPhotoFile = photoFile;
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outuri);
 
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -327,6 +327,18 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         } else {
             EasyPermissions.requestPermissions(this, "We need permissions because this and that",
                     123, perms);
+        }
+    }
+    @AfterPermissionGranted(124)
+    private void openGallery() {
+        String perms = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (EasyPermissions.hasPermissions(getActivity(), perms)) {
+            openFileChooser();
+            Toast.makeText(getActivity(), "Opening gallery", Toast.LENGTH_SHORT).show();
+        } else {
+            EasyPermissions.requestPermissions(this, "We need permissions to pick a " +
+                            "photo from your gallery",
+                    124, perms);
         }
     }
     @Override
