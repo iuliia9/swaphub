@@ -1,37 +1,30 @@
 package brighton.ac.uk.ic257.swaphub;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 public class MyswapsFragment extends Fragment {
     private DatabaseReference databaseCurrentUser;
@@ -40,8 +33,6 @@ public class MyswapsFragment extends Fragment {
     Button inquiry;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
-    FirebaseRecyclerAdapter<Item,ItemViewHolder> firebaseRecyclerAdapter;
-    LinearLayoutManager mLayoutManager;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +41,6 @@ public class MyswapsFragment extends Fragment {
         progressDialog.setMessage("Loading Please Wait...");
         progressDialog.show();
         databaseCurrentUser = FirebaseDatabase.getInstance().getReference("Items");
-//        databaseItems.keepSynced(true);
         firebaseAuth = FirebaseAuth.getInstance();
         String currentUser = firebaseAuth.getCurrentUser().getUid();
         query2 = databaseCurrentUser.orderByChild("uid").equalTo(currentUser);
@@ -95,34 +85,21 @@ public class MyswapsFragment extends Fragment {
         firebaseRecyclerAdapter.startListening();
         mItems.setAdapter(firebaseRecyclerAdapter);
 
-//        Toolbar myToolbar = view.findViewById(R.id.toolbar);
-//        ((AppCompatActivity)getActivity()).setSupportActionBar(myToolbar);
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My Swaps");
+    query2.addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            // remove prpgress dialog even when no items in database
+            progressDialog.dismiss();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    });
         return view;
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                // User chose the "Settings" item, show the app settings UI...
-//                return true;
-//
-//            case R.id.action_logout:
-//                // User chose the "Favorite" action, mark the current item
-//                // as a favorite...
-//                Toast.makeText(getActivity(),"You are logged out", Toast.LENGTH_SHORT).show();
-//                FirebaseAuth.getInstance().signOut();
-//                startActivity(new Intent(getActivity(), MainActivity.class));
-//                return true;
-//
-//            default:
-//                // If we got here, the user's action was not recognized.
-//                // Invoke the superclass to handle it.
-//                return super.onOptionsItemSelected(item);
-//
-//        }
-//    }
     
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
         View mView;
