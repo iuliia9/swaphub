@@ -1,6 +1,7 @@
 package brighton.ac.uk.ic257.swaphub;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -104,6 +105,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
     StorageReference storageRef;
     Uri image;
     String CameraFile;
+    private ProgressDialog progressDialog;
     private FirebaseDatabase firebaseDatabase;
     static final int PICK_IMAGE_REQUEST = 2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -179,6 +181,9 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setMessage("Loading Please Wait...");
+                progressDialog.show();
                 addItem();
             }
         });
@@ -294,12 +299,14 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                                 swapfor, username, userphone, downloadUri.toString());
 
                         databaseItems.child(id).setValue(item);
+
                         // clear all fields
                         editTextName.setText("");
                         editTextDescription.setText("");
                         editTextSwapFor.setText("");
                         editTextUserPhone.setText("");
                         imageView.setImageBitmap(null);
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getActivity(), "upload failed!!!: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
