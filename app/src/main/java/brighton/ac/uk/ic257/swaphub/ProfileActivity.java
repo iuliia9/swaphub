@@ -78,12 +78,14 @@ protected void onCreate(Bundle savedInstanceState) {
         final DatabaseReference databaseReference = firebaseDatabase.getReference("Users").child(firebaseAuth.getUid());
         // get avatar photo
         StorageReference storageReference = firebaseStorage.getReference("Avatars");
+
         storageReference.child(firebaseAuth.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Picasso.get().load(uri).fit().centerInside().into(profilePicImageView);
             }
         });
+
        // let the user to update profile photo by clicking on it
         profilePicImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +132,7 @@ protected void onCreate(Bundle savedInstanceState) {
                 });
                 if (photoChanged == true) {
                     StorageReference imageReference = storageReference.child(firebaseAuth.getUid());
-                    
+
                 UploadTask uploadTask = imageReference.putFile(imagePath);
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
