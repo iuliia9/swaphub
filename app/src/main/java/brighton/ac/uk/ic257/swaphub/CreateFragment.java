@@ -184,15 +184,34 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setMessage("Loading Please Wait...");
-                progressDialog.show();
-                addItem();
+                if (allFieldsComplete() == true) {
+                    progressDialog = new ProgressDialog(getActivity());
+                    progressDialog.setMessage("Loading Please Wait...");
+                    progressDialog.show();
+                    addItem();
+                }
+                else{
+                    Toast.makeText(getActivity(), "Please Complete All Fields", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
     }
 
+    public boolean allFieldsComplete(){
+        if (!editTextName.getText().toString().trim().equals("") &&
+                !editTextDescription.getText().toString().trim().equals("") &&
+                !editTextSwapFor.getText().toString().trim().equals("") &&
+                !editTextUserName.getText().toString().trim().equals("")&&
+                !editTextUserPhone.getText().toString().trim().equals("")&&
+                !editTextUserCity.getText().toString().trim().equals("")&&
+                (mImageUri != null || image != null)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //          File where the photo goes
