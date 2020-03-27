@@ -79,6 +79,8 @@ public class HomeFragment extends Fragment {
                 holder.setSwapFor(model.getItemSwapFor());
                 holder.setUserName(model.getSellerName());
                 holder.setUserPhone(model.getSellerPhone());
+                holder.setUserCity(model.getSellerCity());
+
                 Picasso.get()
                         .load(model.getImageUrl())
                         .fit()
@@ -184,6 +186,10 @@ public class HomeFragment extends Fragment {
         public void setUserPhone(String userPhone){
             TextView itemSwapFor = mView.findViewById(R.id.UserPhone);
             itemSwapFor.setText(userPhone);
+        }
+        public void setUserCity(String userCity){
+            TextView itemSwapFor = mView.findViewById(R.id.UserCity);
+            itemSwapFor.setText(userCity);
         }
     }
 }

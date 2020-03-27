@@ -64,6 +64,7 @@ public class MyswapsFragment extends Fragment {
                 holder.setSwapFor(model.getItemSwapFor());
                 holder.setUserName(model.getSellerName());
                 holder.setUserPhone(model.getSellerPhone());
+                holder.setUserCity(model.getSellerCity());
                 Picasso.get()
                         .load(model.getImageUrl())
                         .fit()
@@ -115,23 +116,27 @@ public class MyswapsFragment extends Fragment {
         }
         public void setCategory(String category){
             TextView itemCategory = mView.findViewById(R.id.Category);
-            itemCategory.setText("Category: " + category);
+            itemCategory.setText(category);
         }
         public void setDescription(String description){
             TextView itemDescription = mView.findViewById(R.id.Description);
-            itemDescription.setText("Description: " + description);
+            itemDescription.setText(description);
         }
         public void setSwapFor(String swapfor){
             TextView itemSwapFor = mView.findViewById(R.id.SwapFor);
-            itemSwapFor.setText("Swap For: " + swapfor);
+            itemSwapFor.setText(swapfor);
         }
         public void setUserName(String username){
             TextView itemSwapFor = mView.findViewById(R.id.UserName);
-            itemSwapFor.setText("Contact Name: " + username);
+            itemSwapFor.setText(username);
         }
         public void setUserPhone(String userPhone){
             TextView itemSwapFor = mView.findViewById(R.id.UserPhone);
-            itemSwapFor.setText("Phone: " + userPhone);
+            itemSwapFor.setText(userPhone);
+        }
+        public void setUserCity(String userCity){
+            TextView itemSwapFor = mView.findViewById(R.id.UserCity);
+            itemSwapFor.setText(userCity);
         }
     }
 }

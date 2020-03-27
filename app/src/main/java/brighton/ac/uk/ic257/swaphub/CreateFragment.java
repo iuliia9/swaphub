@@ -92,6 +92,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
     EditText editTextSwapFor;
     EditText editTextUserName;
     EditText editTextUserPhone;
+    EditText editTextUserCity;
     Spinner spinnerCategory;
     Button buttonAdd;
     private FirebaseAuth firebaseAuth;
@@ -133,6 +134,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         editTextSwapFor = view.findViewById(R.id.editTextItemSwapFor);
         editTextUserName = view.findViewById(R.id.editTextUserName);
         editTextUserPhone = view.findViewById(R.id.editTextUserPhone);
+        editTextUserCity = view.findViewById(R.id.editTextUserCity);
         spinnerCategory = view.findViewById(R.id.spinner);
         buttonAdd = view.findViewById(R.id.buttonAdd);
         buttonChoosePhoto = view.findViewById(R.id.buttonChoosePhoto);
@@ -146,6 +148,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                 System.out.println("onChange");
                 final UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                 editTextUserName.setText(userProfile.getUserName());
+                editTextUserCity.setText(userProfile.getUserCity());
                 //  profilePhonenoTextView.setText(userProfile.getUserCity());
             }
 
@@ -294,9 +297,10 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                         String swapfor = editTextSwapFor.getText().toString().trim();
                         String username = editTextUserName.getText().toString().trim();
                         String userphone = editTextUserPhone.getText().toString().trim();
+                        String usercity = editTextUserCity.getText().toString().trim();
                         String uid = firebaseAuth.getInstance().getCurrentUser().getUid();
                         Item item = new Item(id, name, uid, category, description,
-                                swapfor, username, userphone, downloadUri.toString());
+                                swapfor, username, userphone, usercity, downloadUri.toString());
 
                         databaseItems.child(id).setValue(item);
 
@@ -305,6 +309,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                         editTextDescription.setText("");
                         editTextSwapFor.setText("");
                         editTextUserPhone.setText("");
+                        editTextUserCity.setText("");
                         imageView.setImageBitmap(null);
                         progressDialog.dismiss();
                         Toast.makeText(getActivity(), "Item added", Toast.LENGTH_SHORT).show();

@@ -9,6 +9,7 @@ public class Item {
     String itemSwapFor;
     String sellerName;
     String sellerPhone;
+    String sellerCity;
     String imageUrl;
     String uid;
 
@@ -16,7 +17,7 @@ public class Item {
 
     }
     public Item(String itemId, String itemName, String uid, String itemCategory, String itemDescription,
-                String itemSwapFor, String sellerName, String sellerPhone, String imageUrl) {
+                String itemSwapFor, String sellerName, String sellerPhone, String sellerCity, String imageUrl) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.uid = uid;
@@ -25,6 +26,7 @@ public class Item {
         this.itemSwapFor = itemSwapFor;
         this.sellerName = sellerName;
         this.sellerPhone = sellerPhone;
+        this.sellerCity = sellerCity;
         this.imageUrl = imageUrl;
     }
 
@@ -53,6 +55,10 @@ public class Item {
     public String getSellerPhone() { return sellerPhone; }
 
     public String getImageUrl() { return imageUrl; }
+
+    public String getSellerCity() { return sellerCity; }
+
+    public void setSellerCity(String sellerCity) { this.sellerCity = sellerCity; }
 
     public void setItemName(String itemName) { this.itemName = itemName; }
 
