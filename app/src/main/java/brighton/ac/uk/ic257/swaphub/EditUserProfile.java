@@ -102,14 +102,30 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view == btnsave) {
+            if (fieldsCompleted() == true) {
                 userProfile();
-            if (imagePath != null){
-                sendUserData();}
+                if (imagePath != null) {
+                    sendUserData();
+                }
                 finish();
                 startActivity(new Intent(EditUserProfile.this, HomeActivity.class));
+            }
+            else{
+                Toast.makeText(this, "Please Complete All Fields", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
+    private boolean fieldsCompleted(){
+        if (!editTextName.getText().toString().trim().equals("")&&
+                !editTextSurname.getText().toString().trim().equals("")&&
+                !editTextCity.getText().toString().trim().equals("")){
+            return true;
+        } else{
+            return false;
+        }
+
+    }
     private void sendUserData() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         // Get "User UID" from Firebase > Authentification > Users.

@@ -40,6 +40,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
+        android:hint="Description"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +55,6 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:hint="Description"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,6 +66,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
+        android:hint="Swap for?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutItemDesc">
@@ -75,7 +76,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="Swap for?"
             />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
@@ -106,6 +106,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
+        android:hint="Your Phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUserName">
@@ -115,7 +116,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
-            android:hint="Your Phone"
             />
     </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
@@ -126,6 +126,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:padding="5dp"
+            android:hint="Your City"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutYourPhone">
@@ -134,8 +135,7 @@
                 android:id="@+id/editTextUserCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:hint="Your City"
+                android:inputType="text"
                 />
         </com.google.android.material.textfield.TextInputLayout>
     <Spinner
