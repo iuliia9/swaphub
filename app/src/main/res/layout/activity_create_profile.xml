@@ -25,6 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Name:"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile"/>
@@ -32,6 +34,8 @@
         android:id="@+id/textInputLayoutName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TextViewName">
@@ -48,6 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Surname:"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"/>
@@ -55,6 +61,8 @@
         android:id="@+id/textInputLayoutSurname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TextViewSurname">
@@ -71,12 +79,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="City:"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutSurname"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayoutCity"
         android:layout_width="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,6 +106,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email:"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCity"/>
@@ -102,6 +116,8 @@
         android:id="@+id/TextViewEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Email"
         android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,11 +126,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="10dp"
         android:text="SUBMIT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

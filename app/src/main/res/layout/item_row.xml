@@ -121,7 +121,7 @@
         </TableRow>
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:id="@+id/button_make_inquiry"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
