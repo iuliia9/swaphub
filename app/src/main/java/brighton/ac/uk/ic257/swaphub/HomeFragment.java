@@ -30,6 +30,7 @@ import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 
+
 public class HomeFragment extends Fragment {
     private DatabaseReference databaseItems;
     private DatabaseReference databaseGroups;
@@ -39,6 +40,7 @@ public class HomeFragment extends Fragment {
     private ProgressDialog progressDialog;
     FirebaseRecyclerAdapter<Item, ItemViewHolder> firebaseRecyclerAdapter;
     LinearLayoutManager mLayoutManager;
+
 
     public HomeFragment(){
         // empty constructor
@@ -71,6 +73,7 @@ public class HomeFragment extends Fragment {
 
         FirebaseRecyclerAdapter<Item, ItemViewHolder>firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>
                 (options) {
+
             @Override
             protected void onBindViewHolder(@NonNull ItemViewHolder holder, int position, @NonNull Item model) {
                 holder.setName(model.getItemName());
@@ -80,7 +83,56 @@ public class HomeFragment extends Fragment {
                 holder.setUserName(model.getSellerName());
                 holder.setUserPhone(model.getSellerPhone());
                 holder.setUserCity(model.getSellerCity());
+                holder.setButton();
+                holder.makeInquiry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "Please write Chat Name...",
+                                Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Enter Chat Name :");
+                        final EditText groupNameField = new EditText(getActivity());
+                        groupNameField.setHint("e.g Fresh Vegetables");
+                        groupNameField.setText(model.getItemName());
+                        builder.setView(groupNameField);
 
+                        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                String groupName = groupNameField.getText().toString();
+
+                                if (TextUtils.isEmpty(groupName))
+                                {
+                                    Toast.makeText(getActivity(), "Please write Chat Name...",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    databaseGroups.child(groupName).setValue("")
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task)
+                                                {
+                                                    if (task.isSuccessful())
+                                                    {
+                                                        Toast.makeText(getActivity(), " Chat is Created Successfully", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                        builder.show();
+                    }
+                });
                 Picasso.get()
                         .load(model.getImageUrl())
                         .fit()
@@ -94,58 +146,6 @@ public class HomeFragment extends Fragment {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_row, parent, false);
                 progressDialog.dismiss();
-                Button makeInquiry = view.findViewById(R.id.button_make_inquiry);
-                // make inquiry clicked
-                makeInquiry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialog);
-                        builder.setTitle("Enter Group Name :");
-
-                        final EditText groupNameField = new EditText(getActivity());
-                        groupNameField.setHint("e.g Fresh Vegetables");
-                        builder.setView(groupNameField);
-
-                        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i)
-                            {
-                                String groupName = groupNameField.getText().toString();
-
-                                if (TextUtils.isEmpty(groupName))
-                                {
-                                    Toast.makeText(getActivity(), "Please write Group Name...",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                else
-                                {
-                                    databaseGroups.child(groupName).setValue("")
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task)
-                                                {
-                                                    if (task.isSuccessful())
-                                                    {
-                                                        Toast.makeText(getActivity(), " group is Created Successfully", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }
-                                            });
-                                }
-                            }
-                        });
-
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i)
-                            {
-                                dialogInterface.cancel();
-                            }
-                        });
-
-                        builder.show();
-                    }
-                });
                 return new ItemViewHolder(view);
             }
         };
@@ -154,8 +154,9 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder{
+    public  class ItemViewHolder extends RecyclerView.ViewHolder {
         View mView;
+        Button makeInquiry;
 
         public ImageView imageView;
                 public ItemViewHolder(View itemView){
@@ -163,6 +164,10 @@ public class HomeFragment extends Fragment {
                     mView = itemView;
                     imageView = itemView.findViewById(R.id.image_view_upload);
                 }
+
+        public void setButton() {
+           makeInquiry = mView.findViewById(R.id.button_make_inquiry);
+        }
         public void setName(String name){
             TextView itemName = mView.findViewById(R.id.Name);
             itemName.setText(name);
@@ -191,5 +196,6 @@ public class HomeFragment extends Fragment {
             TextView itemSwapFor = mView.findViewById(R.id.UserCity);
             itemSwapFor.setText(userCity);
         }
+
     }
 }
