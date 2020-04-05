@@ -1,5 +1,6 @@
 package brighton.ac.uk.ic257.swaphub;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -116,14 +117,16 @@ protected void onCreate(Bundle savedInstanceState) {
             public void onCancelled( DatabaseError databaseError) {
             }
         });
+
     // update profile info when save button clicked
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = profileNameTextView.getText().toString();
+                if (allFieldsComplete() == true){
+                    String name = profileNameTextView.getText().toString();
                 String surname = profileSurnameTextView.getText().toString();
-                String phoneno =  profilePhonenoTextView.getText().toString();
-                UserProfile userinformation = new UserProfile(name,surname, phoneno);
+                String phoneno = profilePhonenoTextView.getText().toString();
+                UserProfile userinformation = new UserProfile(name, surname, phoneno);
                 databaseReference.setValue(userinformation).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -133,22 +136,39 @@ protected void onCreate(Bundle savedInstanceState) {
                 if (photoChanged == true) {
                     StorageReference imageReference = storageReference.child(firebaseAuth.getUid());
 
-                UploadTask uploadTask = imageReference.putFile(imagePath);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProfileActivity.this, "Error: Uploading profile picture", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(ProfileActivity.this, "Profile picture uploaded", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    UploadTask uploadTask = imageReference.putFile(imagePath);
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ProfileActivity.this, "Error: Uploading profile picture", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(ProfileActivity.this, "Profile picture uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+              }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please Complete All Fields", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
 
+
+    }
+    public boolean allFieldsComplete(){
+        if (!profileNameTextView.getText().toString().trim().equals("") &&
+                !profileSurnameTextView.getText().toString().trim().equals("") &&
+                !profilePhonenoTextView.getText().toString().trim().equals("") &&
+                !textViewemailname.getText().toString().trim().equals("") &&
+                !textViewemailname.getText().toString().trim().equals("")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
 }
