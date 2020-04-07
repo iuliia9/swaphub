@@ -21,6 +21,10 @@
         <activity android:name=".HomeActivity"></activity>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".EditUserProfile"/>
+        <activity android:name=".ChatFragment"
+        android:launchMode="singleTop"
+        android:parentActivityName=".HomeActivity"/>
+    <activity android:name=".ChatActivity" android:parentActivityName=".ChatFragment"/>
         <activity android:name=".ProfileActivity" android:parentActivityName=".HomeActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>

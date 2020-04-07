@@ -24,9 +24,12 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 
@@ -34,9 +37,12 @@ import com.squareup.picasso.Picasso;
 public class HomeFragment extends Fragment {
     private DatabaseReference databaseItems;
     private DatabaseReference databaseGroups;
+    private DatabaseReference databaseUser;
     RecyclerView mItems;
     Query query1;
-    private FirebaseAuth firebaseAuth;
+    String name, surname;
+    String currentUserID;
+    private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
     FirebaseRecyclerAdapter<Item, ItemViewHolder> firebaseRecyclerAdapter;
     LinearLayoutManager mLayoutManager;
@@ -57,9 +63,28 @@ public class HomeFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading Please Wait...");
         progressDialog.show();
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
         databaseGroups = FirebaseDatabase.getInstance().getReference("Groups");
         databaseItems = FirebaseDatabase.getInstance().getReference("Items");
-//        databaseItems.keepSynced(true);
+
+        //get current user's name and surname
+        databaseUser = FirebaseDatabase.getInstance().getReference("Users").child(currentUserID);
+        databaseUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               UserProfile user = dataSnapshot.getValue(UserProfile.class);
+               name = user.getUserName();
+               surname = user.getUserSurname();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         query1 = FirebaseDatabase.getInstance().getReference().child("Items");
         mItems = view.findViewById(R.id.myrecycleview);
         mItems.setHasFixedSize(true);
@@ -87,8 +112,6 @@ public class HomeFragment extends Fragment {
                 holder.makeInquiry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getActivity(), "Please write Chat Name...",
-                                Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("Enter Chat Name :");
                         final EditText groupNameField = new EditText(getActivity());
@@ -101,6 +124,7 @@ public class HomeFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i)
                             {
                                 String groupName = groupNameField.getText().toString();
+                                String uid = model.getUid();
 
                                 if (TextUtils.isEmpty(groupName))
                                 {
@@ -109,7 +133,14 @@ public class HomeFragment extends Fragment {
                                 }
                                 else
                                 {
-                                    databaseGroups.child(groupName).setValue("")
+                                    String from = uid;
+                                    FirebaseAuth mAuth;
+                                    mAuth = FirebaseAuth.getInstance();
+                                    String currentUserID = mAuth.getCurrentUser().getUid();
+                                    databaseGroups = databaseGroups.child(groupName + " (" + name + " " + surname+ ")");
+                                    String to = currentUserID;
+                                    databaseGroups.child("uid").setValue(from);
+                                    databaseGroups.child("uid2").setValue(to)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task)
@@ -121,6 +152,17 @@ public class HomeFragment extends Fragment {
                                                 }
                                             });
                                 }
+                                String from = uid;
+                                FirebaseAuth mAuth;
+                                mAuth = FirebaseAuth.getInstance();
+                                String currentUserID = mAuth.getCurrentUser().getUid();
+                                DatabaseReference databaseGroups2 = FirebaseDatabase.getInstance().getReference("Groups").child(groupName +
+                                        " (" + name + " " + surname+ ")");
+
+
+                                String to = currentUserID;
+                                        databaseGroups2.child("uid").setValue(from);
+                                        databaseGroups2.child("uid2").setValue(to);
                             }
                         });
 
