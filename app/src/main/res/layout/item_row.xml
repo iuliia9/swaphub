@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp" />
         <TextView
+            android:layout_marginLeft="5dp"
             android:id="@+id/Description"
             android:text="Description"
             android:textSize="20sp"
@@ -63,18 +64,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
-        <ImageView
-            android:id="@+id/imageViewName"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="1dp"
-            app:srcCompat="@drawable/ic_person"
-            android:layout_marginBottom="1dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/custom_profile_image"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/avatar"
+                android:cropToPadding="true"
+                />
+<!--        <ImageView-->
+<!--            android:id="@+id/imageViewName"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginTop="1dp"-->
+<!--            app:srcCompat="@drawable/ic_person"-->
+<!--            android:layout_marginBottom="1dp"-->
+<!--            android:layout_marginRight="5dp"-->
+<!--            android:layout_marginLeft="5dp"/>-->
         <TextView
             android:id="@+id/UserName"
             android:text="Contact Name"
+            android:layout_marginLeft="5dp"
             android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

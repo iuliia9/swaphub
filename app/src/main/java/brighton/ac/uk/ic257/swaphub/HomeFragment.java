@@ -2,6 +2,7 @@ package brighton.ac.uk.ic257.swaphub;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,8 +32,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class HomeFragment extends Fragment {
@@ -39,6 +44,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference databaseGroups;
     private DatabaseReference databaseUser;
     RecyclerView mItems;
+    private FirebaseStorage firebaseStorage;
     Query query1;
     String name, surname;
     String currentUserID;
@@ -73,9 +79,15 @@ public class HomeFragment extends Fragment {
         databaseUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               UserProfile user = dataSnapshot.getValue(UserProfile.class);
-               name = user.getUserName();
-               surname = user.getUserSurname();
+                if (dataSnapshot.exists()) {
+                    UserProfile user = dataSnapshot.getValue(UserProfile.class);
+                    name = user.getUserName();
+                    surname = user.getUserSurname();
+                }
+                else {
+                    name = " ";
+                    surname = " ";
+                }
 
             }
 
@@ -88,7 +100,11 @@ public class HomeFragment extends Fragment {
         query1 = FirebaseDatabase.getInstance().getReference().child("Items");
         mItems = view.findViewById(R.id.myrecycleview);
         mItems.setHasFixedSize(true);
-        mItems.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        mItems.setLayoutManager(mLayoutManager);
+       // mItems.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         FirebaseRecyclerOptions<Item> options =
                 new FirebaseRecyclerOptions.Builder<Item>()
@@ -102,6 +118,7 @@ public class HomeFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull ItemViewHolder holder, int position, @NonNull Item model) {
                 holder.setName(model.getItemName());
+
                 holder.setCategory(model.getItemCategory());
                 holder.setDescription(model.getItemDescription());
                 holder.setSwapFor(model.getItemSwapFor());
@@ -180,6 +197,17 @@ public class HomeFragment extends Fragment {
                         .fit()
                         .centerCrop()
                         .into(holder.imageView);
+                // get avatar photo
+                firebaseStorage = FirebaseStorage.getInstance();
+                StorageReference storageReference = firebaseStorage.getReference("Avatars");
+
+                storageReference.child(model.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).fit().centerInside().into(holder.userImage);
+                    }
+                });
+//                Picasso.get().load(model.getImageUrl()).into(holder.userImage);
             }
 
             @NonNull
@@ -199,12 +227,15 @@ public class HomeFragment extends Fragment {
     public  class ItemViewHolder extends RecyclerView.ViewHolder {
         View mView;
         Button makeInquiry;
+        private CircleImageView userImage;
+
 
         public ImageView imageView;
                 public ItemViewHolder(View itemView){
                     super(itemView);
                     mView = itemView;
                     imageView = itemView.findViewById(R.id.image_view_upload);
+                    userImage = (CircleImageView) itemView.findViewById(R.id.custom_profile_image);
                 }
 
         public void setButton() {

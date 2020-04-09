@@ -57,6 +57,7 @@ dependencies {
 
     // images
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     // permissions
     implementation 'com.karumi:dexter:6.0.2'
     // rxjava
