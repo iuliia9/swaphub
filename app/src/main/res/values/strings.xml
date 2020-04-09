@@ -1,6 +1,38 @@
 <resources>
     <string name="app_name">Swap Hub</string>
     <string name="title_home">SwapHub</string>
+    <string name="Name">Name:</string>
+    <string name="EnterName">Please enter your name</string>
+    <string name="surname">Surname:</string>
+    <string name="please_enter_your_surname">Please enter your surname</string>
+    <string name="city">City:</string>
+    <string name="please_enter_your_city">Please enter your city</string>
+    <string name="email">Email:</string>
+    <string name="Email">Email</string>
+    <string name="submit">SUBMIT</string>
+    <string name="go">GO!</string>
+    <string name="no_account_register_here">No account? Register here!</string>
+    <string name="password">Password</string>
+    <string name="please_login_below">Please LogIn Below:</string>
+    <string name="swap_your_things_to_get_new_renew_old_and_save_the_planet">Swap your things: to get new, renew old and save the planet</string>
+    <string name="swaphub">SWAPHUB</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="already_registered_sign_in_here">Already Registered? Sign in here!</string>
+    <string name="please_register_below">Please Register Below:</string>
+    <string name="submit_item">Submit Item</string>
+    <string name="take_a_photo">Take a Photo</string>
+    <string name="or">or</string>
+    <string name="choose_photo">Choose Photo</string>
+    <string name="your_city">Your City</string>
+    <string name="your_phone">Your Phone</string>
+    <string name="your_name">Your Name</string>
+    <string name="swap_for">Swap for?</string>
+    <string name="description">Description</string>
+    <string name="item_name">Item Name</string>
+    <string name="make_an_inquiry">Make an Inquiry</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="category">Category</string>
     <array name="categories">
         <item>Clothes</item>
         <item>Food</item>
