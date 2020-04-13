@@ -201,6 +201,7 @@ public class HomeFragment extends Fragment {
                 firebaseStorage = FirebaseStorage.getInstance();
                 StorageReference storageReference = firebaseStorage.getReference("Avatars");
 
+
                 storageReference.child(model.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {

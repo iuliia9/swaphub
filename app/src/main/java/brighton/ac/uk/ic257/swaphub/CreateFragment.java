@@ -300,7 +300,6 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                     if (!task.isSuccessful()) {
                         throw task.getException();
                     }
-                    Toast.makeText(getActivity(), "success: ", Toast.LENGTH_SHORT).show();
                     return fileRef.getDownloadUrl();
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
