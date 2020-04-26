@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // initialise all fields
         mFirebase = FirebaseAuth.getInstance();
-        emailId = findViewById(R.id.editText3);
-        password = findViewById(R.id.editText4);
-        btnSignIn = findViewById(R.id.button2);
-        tvSignUp = findViewById(R.id.textView3);
+        emailId = findViewById(R.id.editTextEmail);
+        password = findViewById(R.id.editTextPassword);
+        btnSignIn = findViewById(R.id.buttonSignIn);
+        tvSignUp = findViewById(R.id.textViewRegister);
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
 
@@ -62,10 +62,8 @@ public class MainActivity extends AppCompatActivity {
                     emailId.setError("Please enter your email");
                     emailId.requestFocus();
                 } else if (pwd.isEmpty()) {
-                    emailId.setError("Please enter your password");
-                    emailId.requestFocus();
-                } else if (email.isEmpty() && pwd.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
+                    password.setError("Please enter your password");
+                    password.requestFocus();
                 } else if (!(email.isEmpty() && pwd.isEmpty())) {
                     mFirebase.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>(){
                         @Override

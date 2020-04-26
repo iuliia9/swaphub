@@ -50,7 +50,6 @@ public class HomeFragment extends Fragment {
     String currentUserID;
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
-    FirebaseRecyclerAdapter<Item, ItemViewHolder> firebaseRecyclerAdapter;
     LinearLayoutManager mLayoutManager;
 
 
@@ -66,9 +65,11 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
+        // display progress dialog when items are being loaded
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading Please Wait...");
         progressDialog.show();
+        // initialise fields
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         databaseGroups = FirebaseDatabase.getInstance().getReference("Groups");
@@ -100,12 +101,13 @@ public class HomeFragment extends Fragment {
         query1 = FirebaseDatabase.getInstance().getReference().child("Items");
         mItems = view.findViewById(R.id.myrecycleview);
         mItems.setHasFixedSize(true);
+        // ensure the most recent items are displayed first
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         mItems.setLayoutManager(mLayoutManager);
-       // mItems.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        // firebase recycler adapter
         FirebaseRecyclerOptions<Item> options =
                 new FirebaseRecyclerOptions.Builder<Item>()
                         .setQuery(databaseItems, Item.class)
@@ -118,7 +120,6 @@ public class HomeFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull ItemViewHolder holder, int position, @NonNull Item model) {
                 holder.setName(model.getItemName());
-
                 holder.setCategory(model.getItemCategory());
                 holder.setDescription(model.getItemDescription());
                 holder.setSwapFor(model.getItemSwapFor());
@@ -126,6 +127,7 @@ public class HomeFragment extends Fragment {
                 holder.setUserPhone(model.getSellerPhone());
                 holder.setUserCity(model.getSellerCity());
                 holder.setButton();
+                // when a user clicks on make inquiry button
                 holder.makeInquiry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -150,11 +152,13 @@ public class HomeFragment extends Fragment {
                                 }
                                 else
                                 {
+                                    // who is receiving an inquiry
                                     String from = uid;
                                     FirebaseAuth mAuth;
                                     mAuth = FirebaseAuth.getInstance();
                                     String currentUserID = mAuth.getCurrentUser().getUid();
                                     databaseGroups = databaseGroups.child(groupName + " (" + name + " " + surname+ ")");
+                                    // who is making an inquiry
                                     String to = currentUserID;
                                     databaseGroups.child("uid").setValue(from);
                                     databaseGroups.child("uid2").setValue(to)
@@ -169,17 +173,7 @@ public class HomeFragment extends Fragment {
                                                 }
                                             });
                                 }
-                                String from = uid;
-                                FirebaseAuth mAuth;
-                                mAuth = FirebaseAuth.getInstance();
-                                String currentUserID = mAuth.getCurrentUser().getUid();
-                                DatabaseReference databaseGroups2 = FirebaseDatabase.getInstance().getReference("Groups").child(groupName +
-                                        " (" + name + " " + surname+ ")");
 
-
-                                String to = currentUserID;
-                                        databaseGroups2.child("uid").setValue(from);
-                                        databaseGroups2.child("uid2").setValue(to);
                             }
                         });
 
@@ -200,15 +194,13 @@ public class HomeFragment extends Fragment {
                 // get avatar photo
                 firebaseStorage = FirebaseStorage.getInstance();
                 StorageReference storageReference = firebaseStorage.getReference("Avatars");
-
-
                 storageReference.child(model.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         Picasso.get().load(uri).fit().centerInside().into(holder.userImage);
                     }
                 });
-//                Picasso.get().load(model.getImageUrl()).into(holder.userImage);
+
             }
 
             @NonNull
@@ -216,6 +208,7 @@ public class HomeFragment extends Fragment {
             public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_row, parent, false);
+                // remove progress dialog
                 progressDialog.dismiss();
                 return new ItemViewHolder(view);
             }
@@ -230,7 +223,7 @@ public class HomeFragment extends Fragment {
         Button makeInquiry;
         private CircleImageView userImage;
 
-
+        // constructor
         public ImageView imageView;
                 public ItemViewHolder(View itemView){
                     super(itemView);

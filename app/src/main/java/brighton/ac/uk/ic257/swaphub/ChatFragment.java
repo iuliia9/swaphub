@@ -37,6 +37,7 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState)
     {
         chatFragmentView = inflater.inflate(R.layout.fragment_chat, container, false);
+        // initialise fields
         GroupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
         mAuth = FirebaseAuth.getInstance();
         list_view = chatFragmentView.findViewById(R.id.list_view);
@@ -70,6 +71,7 @@ public class ChatFragment extends Fragment {
                 {
                     DataSnapshot d = ((DataSnapshot)iterator.next());
                     if (d != null) {
+                        // make sure that chats are private
                         String currentUserID = mAuth.getCurrentUser().getUid();
                         if (d.child("uid").getValue() != null && d.child("uid2").getValue() != null) {
                             String uid1 = (d.child("uid").getValue().toString());

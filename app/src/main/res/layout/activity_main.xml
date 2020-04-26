@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/login">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText3"
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
@@ -88,14 +88,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editText4"
+            android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button2"
+        android:id="@+id/buttonSignIn"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="50dp"
@@ -107,7 +107,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textViewRegister"
         android:layout_width="200dp"
         android:layout_height="48dp"
         android:layout_marginStart="5dp"
@@ -118,6 +118,6 @@
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonSignIn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

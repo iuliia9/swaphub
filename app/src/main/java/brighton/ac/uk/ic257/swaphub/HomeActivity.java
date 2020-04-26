@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
-
+        // navigate between main screens
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 fragment = new HomeFragment();

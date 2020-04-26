@@ -2,49 +2,29 @@ package brighton.ac.uk.ic257.swaphub;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
-import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,37 +32,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import com.google.firebase.auth.FirebaseAuth;
-
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
 import static android.app.Activity.RESULT_OK;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 import static com.firebase.ui.auth.ui.email.RegisterEmailFragment.TAG;
 
 public class CreateFragment extends Fragment implements  EasyPermissions.PermissionCallbacks{
@@ -96,11 +60,9 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
     Spinner spinnerCategory;
     Button buttonAdd;
     private FirebaseAuth firebaseAuth;
-
     Button buttonChoosePhoto;
     Button buttonTakePhoto;
     ImageView imageView;
-    ProgressBar progressBar;
     Uri mImageUri;
     DatabaseReference databaseItems;
     StorageReference storageRef;
@@ -110,11 +72,10 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
     private FirebaseDatabase firebaseDatabase;
     static final int PICK_IMAGE_REQUEST = 2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int CAMERA_PERMISSION_CODE = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
+
 
     public CreateFragment() {
-        // empty constructor
+        // required empty constructor
     }
 
     @Override
@@ -126,6 +87,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create, container, false);
+        // initialise fields
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference("Users").child(firebaseAuth.getUid());
@@ -141,21 +103,20 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         buttonTakePhoto = view.findViewById(R.id.buttonTakePhoto);
         imageView = view.findViewById(R.id.imageView);
 
+        // pre-fill name and city fields
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("onChange");
                 final UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                 editTextUserName.setText(userProfile.getUserName());
                 editTextUserCity.setText(userProfile.getUserCity());
-                //  profilePhonenoTextView.setText(userProfile.getUserCity());
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
         buttonTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,9 +128,11 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                 }
             }
         });
+
         buttonChoosePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // check API version because of different ways permissions work
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     openGallery();
                 }
@@ -178,6 +141,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
                 }
             }
         });
+
         storageRef = FirebaseStorage.getInstance().getReference("Items");
         databaseItems = FirebaseDatabase.getInstance().getReference("Items");
 
@@ -185,6 +149,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
             @Override
             public void onClick(View v) {
                 if (allFieldsComplete() == true) {
+                    // display progress dialog while the item is being added
                     progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setMessage("Loading Please Wait...");
                     progressDialog.show();
@@ -198,6 +163,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
         return view;
     }
 
+    // check all fields are completed
     public boolean allFieldsComplete(){
         if (!editTextName.getText().toString().trim().equals("") &&
                 !editTextDescription.getText().toString().trim().equals("") &&
@@ -355,7 +321,7 @@ public class CreateFragment extends Fragment implements  EasyPermissions.Permiss
             dispatchTakePictureIntent();
             Toast.makeText(getActivity(), "Opening camera", Toast.LENGTH_SHORT).show();
         } else {
-            EasyPermissions.requestPermissions(this, "We need permissions because this and that",
+            EasyPermissions.requestPermissions(this, "We need permissions to take a photo",
                     123, perms);
         }
     }

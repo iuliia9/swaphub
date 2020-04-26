@@ -45,21 +45,26 @@ public class MyswapsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_myswaps, null);
+        // display progress dialog until all items are loaded
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading Please Wait...");
         progressDialog.show();
+        // get a reference to items
         databaseCurrentUser = FirebaseDatabase.getInstance().getReference("Items");
+        // get current user
         firebaseAuth = FirebaseAuth.getInstance();
         String currentUser = firebaseAuth.getCurrentUser().getUid();
+        // display items posted by the current user
         query2 = databaseCurrentUser.orderByChild("uid").equalTo(currentUser);
         mItems = view.findViewById(R.id.myrecycleview);
         mItems.setHasFixedSize(true);
+        // ensure most recent items are displayed first
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         mItems.setLayoutManager(mLayoutManager);
-//        mItems.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        // firebase recycler adapter
         FirebaseRecyclerOptions<Item> options =
                 new FirebaseRecyclerOptions.Builder<Item>()
                         .setQuery(query2, Item.class)
@@ -82,10 +87,9 @@ public class MyswapsFragment extends Fragment {
                         .fit()
                         .centerCrop()
                         .into(holder.imageView);
-                // get avatar photo
+                // get avatar photo of the item author
                 firebaseStorage = FirebaseStorage.getInstance();
                 StorageReference storageReference = firebaseStorage.getReference("Avatars");
-
                 storageReference.child(model.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -99,7 +103,9 @@ public class MyswapsFragment extends Fragment {
             public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_row, parent, false);
+                // remove progress dialog since items have been loaded
                 progressDialog.dismiss();
+                // remove make an inquiry button
                 inquiry = view.findViewById(R.id.button_make_inquiry);
                 inquiry.setVisibility(View.GONE);
                 return new ItemViewHolder(view);
@@ -111,7 +117,7 @@ public class MyswapsFragment extends Fragment {
     query2.addValueEventListener(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            // remove prpgress dialog even when no items in database
+            // remove progress dialog even when no items in database yet
             progressDialog.dismiss();
         }
 
@@ -128,6 +134,7 @@ public class MyswapsFragment extends Fragment {
         View mView;
         public ImageView imageView;
         private CircleImageView userImage;
+        // constructor
         public ItemViewHolder(View itemView){
             super(itemView);
             mView = itemView;

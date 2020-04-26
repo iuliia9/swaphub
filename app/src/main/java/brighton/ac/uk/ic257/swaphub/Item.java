@@ -14,7 +14,7 @@ public class Item {
     String uid;
 
     public Item(){
-
+        // required empty constructor
     }
     public Item(String itemId, String itemName, String uid, String itemCategory, String itemDescription,
                 String itemSwapFor, String sellerName, String sellerPhone, String sellerCity, String imageUrl) {

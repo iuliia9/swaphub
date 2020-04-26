@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Swap Hub</string>
+    <string name="app_name">SwapHub</string>
     <string name="title_home">SwapHub</string>
     <string name="Name">Name:</string>
     <string name="EnterName">Please enter your name</string>

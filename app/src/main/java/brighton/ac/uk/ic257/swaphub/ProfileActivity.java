@@ -43,7 +43,7 @@ public class ProfileActivity extends AppCompatActivity{
     boolean photoChanged = false;
     Uri imagePath;
 
-    // pick image from gallery
+    // pick profile image from gallery
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
             imagePath = data.getData();
@@ -67,6 +67,7 @@ protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // set title for toolbar
         getSupportActionBar().setTitle("Profile");
+        // initialise all fields
         profilePicImageView = findViewById(R.id.profile);
         profileNameTextView = findViewById(R.id.profile_name_textView);
         profileSurnameTextView = findViewById(R.id.profile_surname_textView);
@@ -80,6 +81,7 @@ protected void onCreate(Bundle savedInstanceState) {
         // get avatar photo
         StorageReference storageReference = firebaseStorage.getReference("Avatars");
 
+        //load profile photo
         storageReference.child(firebaseAuth.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -99,7 +101,7 @@ protected void onCreate(Bundle savedInstanceState) {
             }
         });
 
-
+        // get current user
         final FirebaseUser user=firebaseAuth.getCurrentUser();
         // display profile info from database
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {

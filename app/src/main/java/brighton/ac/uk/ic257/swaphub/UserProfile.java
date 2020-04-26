@@ -5,11 +5,10 @@ public class UserProfile {
        String userName;
        String userSurname;
        String userCity;
-       String uid;
-       String FirebaseToken;
+
 
         public UserProfile(){
-            // empty constructor
+            // required empty constructor
         }
 
         public UserProfile(String userName,String userSurname, String userCity){

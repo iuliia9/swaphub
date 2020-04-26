@@ -44,6 +44,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // select profile photo from gallery
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
             imagePath = data.getData();
             try {
@@ -70,7 +71,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
             finish();
             startActivity(new Intent(getApplicationContext(), HomeFragment.class));
         }
-
+        // initialise fields
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
         editTextName = findViewById(R.id.editTextName);
         editTextSurname = findViewById(R.id.editTextSurname);
@@ -83,7 +84,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         profileImageView = findViewById(R.id.profile);
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference("Avatars");
-
+        // choose a profile photo
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +96,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         });
     }
 
+    // create user profile
     private void userProfile() {
         String name = editTextName.getText().toString().trim();
         String surname = editTextSurname.getText().toString().trim();
@@ -102,9 +104,10 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         UserProfile userinformation = new UserProfile(name, surname, city);
         FirebaseUser user = firebaseAuth.getCurrentUser();
         databaseReference.child(user.getUid()).setValue(userinformation);
-        Toast.makeText(getApplicationContext(), "User information updated", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "User profile created", Toast.LENGTH_LONG).show();
     }
 
+    // on click of button - check if all fields completed
     @Override
     public void onClick(View view) {
         if (view == btnsave) {
@@ -122,6 +125,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    // all fields completed
     private boolean fieldsCompleted(){
         if (!editTextName.getText().toString().trim().equals("")&&
                 !editTextSurname.getText().toString().trim().equals("")&&
@@ -132,9 +136,9 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         }
 
     }
+    // upload profile photo
     private void sendUserData() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        // Get "User UID" from Firebase > Authentification > Users.
+        // get storage reference for current user
         StorageReference imageReference = storageReference.child(firebaseAuth.getUid());
             UploadTask uploadTask = imageReference.putFile(imagePath);
             uploadTask.addOnFailureListener(new OnFailureListener() {
