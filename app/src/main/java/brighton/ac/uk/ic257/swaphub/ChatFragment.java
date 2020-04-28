@@ -21,6 +21,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class ChatFragment extends Fragment {
+    // some code is adapted from a tutorial:
+    // https://www.youtube.com/watch?v=gPqJcPtN18I&list=PLxefhmF0pcPmtdoud8f64EpgapkclCllj&index=2&t=0s
+
     private View chatFragmentView;
     private ListView list_view;
     private ArrayAdapter<String> arrayAdapter;

@@ -24,6 +24,9 @@ import java.util.Iterator;
 
 
 public class ChatActivity extends AppCompatActivity {
+    // the code is adapted from a tutorial:
+    // https://www.youtube.com/watch?v=gPqJcPtN18I&list=PLxefhmF0pcPmtdoud8f64EpgapkclCllj&index=2&t=0s
+
     private String currentGroupName;
     private ImageButton SendMessageBtn;
     private FirebaseAuth mAuth;
