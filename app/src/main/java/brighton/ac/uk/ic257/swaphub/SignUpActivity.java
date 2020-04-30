@@ -37,35 +37,38 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // get email and password from fields
                 String email = emailId.getText().toString();
-                String pwd = password.getText().toString();
+                String pwd = password.getText().toString().trim();
 
                 if (email.isEmpty()) {
                     emailId.setError("Please enter your email");
                     emailId.requestFocus();
-                } else if (pwd.isEmpty()) {
+                }
+                else if (pwd.isEmpty()) {
                     password.setError("Please enter your password");
                     password.requestFocus();
-                } else if (!(email.isEmpty() && pwd.isEmpty())) {
+                }
+                else if (pwd.length() < 6){
+                    password.setError("Password must be at least 6 characters long");
+                    password.requestFocus();
+                }
+                else if (!(email.isEmpty() && pwd.isEmpty())) {
                     mFirebase.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUpActivity.this,
                             new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, "Sign Up failed", Toast.LENGTH_SHORT).show();
+                                    if (task.isSuccessful()) {
+                                        startActivity(new Intent(SignUpActivity.this, EditUserProfile.class));
+                                        Toast.makeText(SignUpActivity.this, "Your account has been created", Toast.LENGTH_SHORT).show();
 
                                     }
                                     else{
-                                        startActivity(new Intent(SignUpActivity.this, EditUserProfile.class));
+                                        Toast.makeText(SignUpActivity.this, "Sign Up failed", Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
-
-
                             });
                 }
-                else{
-                    Toast.makeText(SignUpActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 
@@ -73,8 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(SignUpActivity.this, MainActivity.class);
-                startActivity(i);
+                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
             }
         });
     }

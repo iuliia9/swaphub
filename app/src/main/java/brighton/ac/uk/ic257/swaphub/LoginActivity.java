@@ -15,7 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     EditText emailId, password;
     Button btnSignIn;
     TextView tvSignUp;
@@ -33,24 +33,11 @@ public class MainActivity extends AppCompatActivity {
         btnSignIn = findViewById(R.id.buttonSignIn);
         tvSignUp = findViewById(R.id.textViewRegister);
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser mFirebaseUser = mFirebase.getCurrentUser();
                 if (mFirebaseUser != null){
-                    Toast.makeText(MainActivity.this,"You are logged in", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(i);
+                    Toast.makeText(LoginActivity.this,"You are logged in", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                 }
-                else{
-                    Toast.makeText(MainActivity.this,"Please log in", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        };
-
-
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,28 +48,30 @@ public class MainActivity extends AppCompatActivity {
                 if (email.isEmpty()) {
                     emailId.setError("Please enter your email");
                     emailId.requestFocus();
-                } else if (pwd.isEmpty()) {
+                }
+                else if (pwd.isEmpty()) {
                     password.setError("Please enter your password");
                     password.requestFocus();
-                } else if (!(email.isEmpty() && pwd.isEmpty())) {
-                    mFirebase.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>(){
+                }
+                else if (pwd.length() < 6){
+                    password.setError("Password must be at least 6 characters long");
+                    password.requestFocus();
+                }
+                else if (!(email.isEmpty() && pwd.isEmpty())) {
+                    mFirebase.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>(){
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Log in failed", Toast.LENGTH_SHORT).show();
-
+                            if (task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this,"You are logged in", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             }
                             else{
-                                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                Toast.makeText(LoginActivity.this, "Log in failed", Toast.LENGTH_SHORT).show();
                             }
 
                         }
                     });
                 }
-                else{
-                    Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                }
-
             }
         });
 
@@ -90,17 +79,10 @@ public class MainActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SignUpActivity.class));
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mFirebase.addAuthStateListener(mAuthStateListener);
-    }
-
 
 }
 

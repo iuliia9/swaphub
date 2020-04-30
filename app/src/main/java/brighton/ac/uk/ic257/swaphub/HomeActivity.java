@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.action_logout:
                 Toast.makeText(this,"You are logged out", Toast.LENGTH_SHORT).show();
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

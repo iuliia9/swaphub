@@ -47,6 +47,7 @@ public class ProfileActivity extends AppCompatActivity{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
             imagePath = data.getData();
+            photoChanged = true;
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                 profilePicImageView.setImageBitmap(bitmap);
@@ -96,7 +97,6 @@ protected void onCreate(Bundle savedInstanceState) {
                 Intent profileIntent = new Intent();
                 profileIntent.setType("image/*");
                 profileIntent.setAction(Intent.ACTION_GET_CONTENT);
-                photoChanged = true;
                 startActivityForResult(Intent.createChooser(profileIntent, "Select Image."), PICK_IMAGE);
             }
         });
